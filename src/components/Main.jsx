@@ -1,5 +1,7 @@
 import { Row, Col, Card } from "react-bootstrap";
 import { useState, useEffect } from "react";
+import { useDispatch } from "react-redux";
+import { setCurrentTrack } from "../redux/playerSlice";
 
 const Main = () => {
   const [rockTracks, setRockTracks] = useState([]);
@@ -8,6 +10,7 @@ const Main = () => {
   const [loadingPop, setLoadingPop] = useState(true);
   const [hipHopTracks, setHipHopTracks] = useState([]);
   const [loadingHipHop, setLoadingHipHop] = useState(true);
+  const dispatch = useDispatch();
 
   useEffect(() => {
     const fetchRockData = async () => {
@@ -63,6 +66,10 @@ const Main = () => {
     fetchHipHopData();
   }, []);
 
+  const handleCardClick = (track) => {
+    dispatch(setCurrentTrack(track));
+  };
+
   return (
     <main className="col-12 col-md-9 offset-md-3 mainPage">
       <Row className="mainLinks justify-content-center mt-3">
@@ -88,10 +95,9 @@ const Main = () => {
               ) : (
                 rockTracks.map((track) => (
                   <Col key={track.id} className="mb-4">
-                    <Card>
+                    <Card onClick={() => handleCardClick(track)}>
                       <Card.Img variant="top" src={track.album.cover} />
                     </Card>
-
                     <p style={{ textAlign: "center" }}>
                       Track: {track.title} <br /> Artist: {track.artist.name}
                     </p>
@@ -116,10 +122,9 @@ const Main = () => {
               ) : (
                 popTracks.map((track) => (
                   <Col key={track.id} className="mb-4">
-                    <Card>
+                    <Card onClick={() => handleCardClick(track)}>
                       <Card.Img variant="top" src={track.album.cover} />
                     </Card>
-
                     <p style={{ textAlign: "center" }}>
                       Track: {track.title} <br /> Artist: {track.artist.name}
                     </p>
@@ -144,10 +149,9 @@ const Main = () => {
               ) : (
                 hipHopTracks.map((track) => (
                   <Col key={track.id} className="mb-4">
-                    <Card>
+                    <Card onClick={() => handleCardClick(track)}>
                       <Card.Img variant="top" src={track.album.cover} />
                     </Card>
-
                     <p style={{ textAlign: "center" }}>
                       Track: {track.title} <br /> Artist: {track.artist.name}
                     </p>
