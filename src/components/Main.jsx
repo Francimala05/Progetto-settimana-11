@@ -10,6 +10,9 @@ const Main = () => {
   const [loadingPop, setLoadingPop] = useState(true);
   const [hipHopTracks, setHipHopTracks] = useState([]);
   const [loadingHipHop, setLoadingHipHop] = useState(true);
+  const [favTracks, setFavTracks] = useState([]);
+  const [loadingFav, setLoadingFav] = useState(true);
+
   const dispatch = useDispatch();
 
   useEffect(() => {
@@ -70,6 +73,23 @@ const Main = () => {
     dispatch(setCurrentTrack(track));
   };
 
+  useEffect(() => {
+    const fetchFavData = async () => {
+      try {
+        const response = await fetch(
+          "https://striveschool-api.herokuapp.com/api/deezer/search?q=tiamoveramente"
+        );
+        const data = await response.json();
+        setFavTracks(data.data.slice(0, 4));
+        setLoadingFav(false);
+      } catch (error) {
+        console.error("Errore nel recuperare i dati:", error);
+        setLoadingFav(false);
+      }
+    };
+
+    fetchFavData();
+  }, []);
   return (
     <main className="col-12 col-md-9 offset-md-3 mainPage">
       <Row className="mainLinks justify-content-center mt-3">
@@ -148,6 +168,30 @@ const Main = () => {
                 <p>Caricamento...</p>
               ) : (
                 hipHopTracks.map((track) => (
+                  <Col key={track.id} className="mb-4">
+                    <Card onClick={() => handleCardClick(track)}>
+                      <Card.Img variant="top" src={track.album.cover} />
+                    </Card>
+                    <p style={{ textAlign: "center" }}>
+                      Track: {track.title} <br /> Artist: {track.artist.name}
+                    </p>
+                  </Col>
+                ))
+              )}
+            </div>
+          </div>
+        </Col>
+      </Row>
+
+      <Row>
+        <Col xs={12} sm={10} md={9} lg={8}>
+          <div id="fav">
+            <h2>Modà</h2>
+            <div className="row row-cols-1 row-cols-sm-2 row-cols-md-4 imgLinks py-3">
+              {loadingFav ? (
+                <p>Caricamento...</p>
+              ) : (
+                favTracks.map((track) => (
                   <Col key={track.id} className="mb-4">
                     <Card onClick={() => handleCardClick(track)}>
                       <Card.Img variant="top" src={track.album.cover} />
